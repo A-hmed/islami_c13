@@ -1,43 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:islami_c13_sun/ui/utils/constants.dart';
+import 'package:islami_c13_sun/ui/model/sura.dart';
+import 'package:islami_c13_sun/ui/model/sura_details_args.dart';
+import 'package:islami_c13_sun/ui/screens/sura_details_screen/sura_details.dart';
 
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/asset_manager.dart';
 
 class SuraNameRow extends StatelessWidget {
+  final Sura sura;
   final int index;
 
-  const SuraNameRow({super.key, required this.index});
+  const SuraNameRow({super.key, required this.index, required this.sura});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        buildSuraNumberWithBackground(),
-        SizedBox(
-          width: 24,
-        ),
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "todo next session",
-                style: TextStyle(color: AppColors.white, fontSize: 20),
-              ),
-              Text(
-                "${Constants.versesNumber[index]} verses",
-                style: TextStyle(color: AppColors.white, fontSize: 14),
-              ),
-            ],
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(context, SuraDetails.routeName,
+            arguments: SuraDetailsArgs(
+                nameAr: sura.nameAr,
+                nameEn: sura.nameEn,
+                fileName: sura.fileName));
+      },
+      child: Row(
+        children: [
+          buildSuraNumberWithBackground(),
+          SizedBox(
+            width: 24,
           ),
-        ),
-        Text(
-          "${Constants.suraNames[index]}",
-          style: TextStyle(color: AppColors.white, fontSize: 20),
-        )
-      ],
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  sura.nameEn,
+                  style: TextStyle(color: AppColors.white, fontSize: 20),
+                ),
+                Text(
+                  "${sura.verses} verses",
+                  style: TextStyle(color: AppColors.white, fontSize: 14),
+                ),
+              ],
+            ),
+          ),
+          Text(
+            "${sura.nameAr}",
+            style: TextStyle(color: AppColors.white, fontSize: 20),
+          )
+        ],
+      ),
     );
   }
 

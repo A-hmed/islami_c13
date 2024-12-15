@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:islami_c13_sun/ui/model/sura.dart';
 import 'package:islami_c13_sun/ui/screens/home/tabs/quran/sura_name_row.dart';
 import 'package:islami_c13_sun/ui/utils/app_colors.dart';
+import 'package:islami_c13_sun/ui/utils/app_styles.dart';
 import 'package:islami_c13_sun/ui/utils/asset_manager.dart';
+import 'package:islami_c13_sun/ui/utils/constants.dart';
 
-class QuranTab extends StatelessWidget {
+import 'most_recent_suras.dart';
+
+class QuranTab extends StatefulWidget {
   const QuranTab({super.key});
+
+  @override
+  State<QuranTab> createState() => _QuranTabState();
+}
+
+class _QuranTabState extends State<QuranTab> {
+  String userText = "";
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +40,11 @@ class QuranTab extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
+            MostRecentSuras(),
             const Text(
               "Sura List",
               textAlign: TextAlign.start,
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.white),
+              style: AppStyles.whiteBold16,
             ),
             buildSurasListView()
           ],
@@ -44,11 +54,20 @@ class QuranTab extends StatelessWidget {
   }
 
   Widget buildSurasListView() {
+    List<Sura> filteredSuras = [];
+    filteredSuras = Constants.suras.where((sura) {
+      return sura.nameAr.contains(userText) ||
+          sura.nameEn.toLowerCase().contains(userText.toLowerCase());
+    }).toList();
+    print("user text: $userText");
     return Expanded(
       child: ListView.separated(
-        itemCount: 114,
+        itemCount: filteredSuras.length,
         itemBuilder: (context, index) {
-          return SuraNameRow(index: index);
+          return SuraNameRow(
+            index: index,
+            sura: filteredSuras[index],
+          );
         },
         separatorBuilder: (context, index) => Divider(),
       ),
@@ -71,6 +90,10 @@ class QuranTab extends StatelessWidget {
               child: SvgPicture.asset(AssetsManager.icQuran))),
       cursorColor: Colors.white,
       style: const TextStyle(color: Colors.white, fontSize: 16),
+      onChanged: (string) {
+        userText = string;
+        setState(() {});
+      },
     );
   }
 }
