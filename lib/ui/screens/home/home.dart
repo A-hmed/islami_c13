@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:islami_c13_sun/ui/screens/home/tabs/ahadeth/ahadeth_tab.dart';
 import 'package:islami_c13_sun/ui/screens/home/tabs/pray_times/pray_times_tab.dart';
 import 'package:islami_c13_sun/ui/screens/home/tabs/quran/quran_tab.dart';
@@ -26,10 +25,21 @@ class _HomeState extends State<Home> {
     SebhaTab(),
     PrayTimesTab()
   ];
+  PageController controller = PageController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: tabs[currentTabIndex],
+      body: PageView(
+        onPageChanged: (index) {
+          currentTabIndex = index;
+
+          /// Update bottom navigation when user changes page in page view
+          setState(() {});
+        },
+        controller: controller,
+        children: tabs,
+      ),
       bottomNavigationBar: buildBottomNavigationBar(),
     );
   }
@@ -41,36 +51,29 @@ class _HomeState extends State<Home> {
             unselectedItemColor: AppColors.black,
             onTap: (clickedTabIndex) {
               currentTabIndex = clickedTabIndex;
+              controller.animateToPage(currentTabIndex,
+                  curve: Curves.bounceIn,
+                  duration: Duration(milliseconds: 500));
+
+              ///Connect user click with page view
               setState(() {});
             },
             currentIndex: currentTabIndex,
-            items: [
+            items: const [
               BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    AssetsManager.icQuran,
-                    colorFilter:
-                        ColorFilter.mode(AppColors.white, BlendMode.clear),
-                  ),
+                  icon: ImageIcon(AssetImage(AssetsManager.icQuran)),
                   label: "Quran"),
               BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    AssetsManager.icAhadeth,
-                  ),
+                  icon: ImageIcon(AssetImage(AssetsManager.icAhadeth)),
                   label: "Ahadeth"),
               BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    AssetsManager.icRadio,
-                  ),
+                  icon: ImageIcon(AssetImage(AssetsManager.icRadio)),
                   label: "Radio"),
               BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    AssetsManager.icSebha,
-                  ),
+                  icon: ImageIcon(AssetImage(AssetsManager.icSebha)),
                   label: "Sebha"),
               BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    AssetsManager.icPrayTimes,
-                  ),
+                  icon: ImageIcon(AssetImage(AssetsManager.icPrayTimes)),
                   label: "Times"),
             ]),
       );

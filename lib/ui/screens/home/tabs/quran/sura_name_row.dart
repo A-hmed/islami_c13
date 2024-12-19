@@ -2,25 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:islami_c13_sun/ui/model/sura.dart';
 import 'package:islami_c13_sun/ui/model/sura_details_args.dart';
 import 'package:islami_c13_sun/ui/screens/sura_details_screen/sura_details.dart';
+import 'package:islami_c13_sun/ui/utils/shared_prefs_utils.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/asset_manager.dart';
 
 class SuraNameRow extends StatelessWidget {
   final Sura sura;
-  final int index;
+  late RecentSurasProvider provider;
 
-  const SuraNameRow({super.key, required this.index, required this.sura});
+  SuraNameRow({super.key, required this.sura});
 
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of(context);
     return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, SuraDetails.routeName,
+      onTap: () async {
+        provider.addSuraIndex(sura.index);
+        await Navigator.pushNamed(context, SuraDetails.routeName,
             arguments: SuraDetailsArgs(
                 nameAr: sura.nameAr,
                 nameEn: sura.nameEn,
                 fileName: sura.fileName));
+
+        /// This block of code will be done after user closes SuraDetails
       },
       child: Row(
         children: [
@@ -63,7 +69,7 @@ class SuraNameRow extends StatelessWidget {
                 fit: BoxFit.fill)),
         child: Center(
           child: Text(
-            "${index + 1}",
+            "${sura.index + 1}",
             style: TextStyle(
                 color: AppColors.white,
                 fontSize: 20,

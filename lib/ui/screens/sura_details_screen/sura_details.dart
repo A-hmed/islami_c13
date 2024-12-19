@@ -4,6 +4,8 @@ import 'package:islami_c13_sun/ui/model/sura_details_args.dart';
 import 'package:islami_c13_sun/ui/utils/app_colors.dart';
 import 'package:islami_c13_sun/ui/utils/app_styles.dart';
 import 'package:islami_c13_sun/ui/utils/asset_manager.dart';
+import 'package:islami_c13_sun/ui/utils/shared_prefs_utils.dart';
+import 'package:provider/provider.dart';
 
 class SuraDetails extends StatefulWidget {
   static const routeName = "sura_details";
@@ -16,9 +18,11 @@ class SuraDetails extends StatefulWidget {
 
 class _SuraDetailsState extends State<SuraDetails> {
   String suraContent = "";
+  late RecentSurasProvider provider;
 
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of(context, listen: false);
     var args = ModalRoute.of(context)!.settings.arguments as SuraDetailsArgs;
     if (suraContent.isEmpty) getSuraContent(args.fileName);
     return Scaffold(
@@ -69,6 +73,13 @@ class _SuraDetailsState extends State<SuraDetails> {
       suraLines[i] += "[${i + 1}]";
     }
     suraContent = suraLines.join();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    print(" _SuraDetailsState dispose");
+    provider.refreshMostRecentSuras();
   }
 
   ///Dart is single thread language

@@ -32,8 +32,7 @@ class _QuranTabState extends State<QuranTab> {
       )),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: ListView(
           children: [
             Image.asset(AssetsManager.islamiLogo),
             buildSearchTextField(),
@@ -59,18 +58,16 @@ class _QuranTabState extends State<QuranTab> {
       return sura.nameAr.contains(userText) ||
           sura.nameEn.toLowerCase().contains(userText.toLowerCase());
     }).toList();
-    print("user text: $userText");
-    return Expanded(
-      child: ListView.separated(
-        itemCount: filteredSuras.length,
-        itemBuilder: (context, index) {
-          return SuraNameRow(
-            index: index,
-            sura: filteredSuras[index],
-          );
-        },
-        separatorBuilder: (context, index) => Divider(),
-      ),
+    return ListView.separated(
+      itemCount: filteredSuras.length,
+      physics: ClampingScrollPhysics(),
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return SuraNameRow(
+          sura: filteredSuras[index],
+        );
+      },
+      separatorBuilder: (context, index) => Divider(),
     );
   }
 
